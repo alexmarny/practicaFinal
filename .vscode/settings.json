@@ -1,0 +1,11 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+		"lib/**/*.jar",
+		"biblioteca11.jar",
+		"gson-2.10.1.jar",
+		"jadapter-for-native-tts-0.12.0.jar",
+		"notion-sdk-jvm-core-1.11.1.jar"
+	]
+}
