@@ -2,30 +2,31 @@ package view;
 
 import controller.Controller;
 
-public class BaseView {
+/**
+ *
+ * Clase abstracta que marcará los métodos mínimos que se deben implementar
+ * para interactuar con el usuario.
+ * 
+ * - Mostrar la inicialización del programa.
+ * - Mostrar un menú.
+ * - Mostrar una finalización del programa.
+ * 
+ * 
+ */
+public abstract class BaseView {
+    
+    protected Controller controller;
 
-	Controller controller;
+    public abstract void init(String welcomeMsg);
+    
+    public abstract void showMessage(String message);
 
-	public void setControllerRef(Controller controllerRef) {
+	public abstract void showErrorMessage(String errorMsg);
+    
+    public abstract void end(String goodbyeMsg);
+
+    public void setControllerRef(Controller controllerRef) {
 		this.controller = controllerRef;
-	}
-
-	public void init() {
-
-		//TODO: inicia la vista y desencadena la lógica de la aplicación
-		
-	}
-
-	public void showMessage(String message) {
-		System.out.println(message);
-	}
-
-	public void showErrorMessage(String message) {
-		System.err.println(message);
-	}
-
-	public void end() {
-		//TODO: finaliza la vista ordenadamente
 	}
 
 }
