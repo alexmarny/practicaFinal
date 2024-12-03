@@ -15,7 +15,7 @@ public class Model {
 
 	File ficheroEstadoSerializado;
 
-	private HashMap<Integer, Task> taskMap;
+	private HashMap<Double, Task> taskMap;
 	{
 		taskMap = new HashMap<>();
 	}
@@ -51,7 +51,7 @@ public class Model {
 		}
 	}
 
-	public Task getTaskById(int taskId) {
+	public Task getTaskById(Double taskId) {
 		try {
 			if (taskMap.containsKey(taskId)) {
 				return taskMap.get(taskId);
@@ -93,7 +93,7 @@ public class Model {
 
 
 
-	public void deleteTask(int taskId) {
+	public void deleteTask(Double taskId) {
 
 		Task task = taskMap.get(taskId);
 		if (task != null) {

@@ -8,9 +8,8 @@ import java.io.Serializable;
 
 public class Task implements Serializable {
 
-	private static int idCounter = 0;
-
-	private int identifier;
+	private static double idCounter = 0;
+	private Double identifier;
 	private String title;
 	private Date date;
 	private String content;
@@ -64,8 +63,12 @@ public class Task implements Serializable {
 		this.identifier = ++idCounter;
 	}
 
-	public int getIdentifier() {
+	public Double getIdentifier() {
 		return identifier;
+	}
+
+	public void setIdentifier(Double identifier) {
+		this.identifier = identifier;
 	}
 
 	public String getTitle() {
@@ -117,24 +120,15 @@ public class Task implements Serializable {
 	}
 
 	  public static String getHeaderTableStringForTask() {
-        return String.format("|%-5.2s|%-40s|%-28s|%-100s|%-8s|%-14s|%-9s|", "ID", "Title", "Date", "Content", "Priority", "Duration (est)", "Completed");
+        return String.format("|%-5s|%-40s|%-28s|%-100s|%-8s|%-14s|%-9s|", "ID", "Title", "Date", "Content", "Priority", "Duration (est)", "Completed");
     }
 
     public String getAsRowString() {
-		return String.format("|%-5.0f|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, title, date, content, priority, estimatedDuration, completed ? "yes" : "no");
+		return String.format("|%-5.0f|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
     }
 
     public String getInstanceAsDelimitedString(String delimiter) { 
         return String.format(Locale.ENGLISH, "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
     }
 
-	public void setIdentifier(int int1) {
-
-		if (int1 < 0) {
-			throw new IllegalArgumentException("Task ID must be positive");
-		}
-
-		this.identifier = int1;
-			
-	}
 }

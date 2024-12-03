@@ -18,12 +18,19 @@ public class CsvExporter implements IExporter {
 		StringBuilder csv = new StringBuilder();
 		for (Task t : tasks) {
 			csv.append(t.getIdentifier());
-			csv.append(",");
-			csv.append(t.getContent());
-			csv.append(",");
-			csv.append(t.getPriority());
-			csv.append(",");
+			csv.append(";");
+			csv.append(t.getTitle());
+			csv.append(";");
 			csv.append(t.getDate());
+			csv.append(";");
+			csv.append(t.getContent());
+			csv.append(";");
+			csv.append(t.getPriority());
+			csv.append(";");
+			csv.append(t.getEstimatedDuration());
+			csv.append(";");
+			csv.append(t.isCompleted());
+			csv.append(";");
 			csv.append("\n");
 		}
 		try {
@@ -43,16 +50,19 @@ public class CsvExporter implements IExporter {
 				Task t = new Task();
 				try {
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					Date date = sdf.parse(parts[3]);
+					Date date = sdf.parse(parts[2]);
 					t.setDate(date);
 				} catch (ParseException e) {
 					throw new ExporterException("Error parsing date from CSV", e);
 				}
 				
-				t.setIdentifier(Integer.parseInt(parts[0]));
-				t.setContent(parts[1]);
-				t.setPriority(Integer.parseInt(parts[2]));
-		
+				t.setIdentifier(Double.parseDouble(parts[0]));
+				t.setTitle(parts[1]);
+				t.setContent(parts[3]);
+				t.setPriority(Integer.parseInt(parts[4]));
+				t.setEstimatedDuration(Integer.parseInt(parts[5]));
+				t.setCompleted(Boolean.parseBoolean(parts[6]));
+
 				tasks.add(t);
 			}
 		} catch (IOException e) {

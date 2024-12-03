@@ -1,6 +1,7 @@
 package view;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.coti.tools.Esdia;
 
@@ -110,8 +111,8 @@ public class InteractiveView extends BaseView {
 	private void subMenuListado() {
 		
 		System.out.println("Listado de tareas:");
-		System.out.println("1. Tareas completadas");
-		System.out.println("2. Tareas incompletas");
+		System.out.println("1. Tareas incompletas");
+		System.out.println("2. Tareas completadas");
 		System.out.println("3. Volver al menú principal");
 
 		int option = Esdia.readInt("Seleccione una opción: ", 1, 3);
@@ -121,18 +122,18 @@ public class InteractiveView extends BaseView {
 				
 			System.out.println("Tareas incompletas:");
 
-				List<Task> incompletedTasks = controller.getAllTask();
-				incompletedTasks.sort((task1, task2) -> Integer.compare(task1.getPriority(), task2.getPriority()));
+			List<Task> incompletedTasks = controller.getAllTasks();
+			incompletedTasks.sort((task1, task2) -> Integer.compare(task2.getPriority(), task1.getPriority()));
 
 
-				System.out.println(Task.getHeaderTableStringForTask());
-				for (Task task : incompletedTasks) {
-					if (!task.isCompleted()) {
-						System.out.println(task.getAsRowString());
-					}
+			System.out.println(Task.getHeaderTableStringForTask());
+			for (Task task : incompletedTasks) {
+				if (!task.isCompleted()) {
+					System.out.println(task.getAsRowString());
 				}
+			}
 
-				Esdia.readString("Presione Enter para continuar...");
+			Esdia.readString("Presione Enter para continuar...");
 				
 				break;
 				
@@ -140,7 +141,7 @@ public class InteractiveView extends BaseView {
 
 				System.out.println("Todas las tareas (completas o no):");
 
-				List<Task> tasks = controller.getAllTask();
+				List<Task> tasks = controller.getAllTasks();
 
 				tasks.sort((task1, task2) -> { // Ordenamos por completitud, fecha, prioridad
 					if (task1.isCompleted() != task2.isCompleted()) {
@@ -152,7 +153,7 @@ public class InteractiveView extends BaseView {
 					}
 				});
 
-				List<Task> completedTasks = controller.getAllTask();
+				List<Task> completedTasks = controller.getAllTasks();
 				
 				System.out.println(Task.getHeaderTableStringForTask());
 				for (Task task : completedTasks) {
@@ -185,7 +186,7 @@ public class InteractiveView extends BaseView {
 
 	private void subMenuDetalle() {
 		
-		int taskId = Esdia.readInt("Introduzca el ID de la tarea a visualizar: ");
+		Double taskId = Esdia.readDouble("Introduzca el ID de la tarea a visualizar: ");
 		Task task = controller.getTaskById(taskId);
 
 		if (task == null) {
@@ -322,7 +323,7 @@ public class InteractiveView extends BaseView {
 		String nombreFichero = Esdia.readString_ne("Introduzca el nombre del fichero a importar desde home: ");
 
 		try {
-			//TODO controller.importarTareas(nombreFichero, tipoArchivo);
+			controller.importarTareas(nombreFichero, tipoArchivo);			
 			showMessage("Tareas importadas correctamente");
 		} catch (Exception e) {
 			showErrorMessage("Error al importar tareas: " + e.getMessage());
@@ -339,7 +340,7 @@ public class InteractiveView extends BaseView {
 		String nombreFichero = Esdia.readString_ne("Introduzca el nombre del fichero a exportar en home: ");
 
 		try {
-			//TODO : controller.exportarTareas(nombreFichero, tipoArchivo);
+			controller.exportarTareas(nombreFichero, tipoArchivo);
 			showMessage("Tareas exportadas correctamente");
 		} catch (Exception e) {
 			showErrorMessage("Error al exportar tareas: " + e.getMessage());
