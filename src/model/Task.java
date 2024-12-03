@@ -2,14 +2,15 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.io.Serializable;
 
 public class Task implements Serializable {
 
-	private static double idCounter = 0;
+	private static int idCounter = 0;
 
-	private double identifier;
+	private int identifier;
 	private String title;
 	private Date date;
 	private String content;
@@ -28,7 +29,7 @@ public class Task implements Serializable {
 	}
 
 	public Task(Task other) {
-		this.identifier = ++idCounter;
+		this.identifier = other.identifier;
 		this.title = other.title;
 		this.date = new Date(other.date.getTime());
 		this.content = other.content;
@@ -63,7 +64,7 @@ public class Task implements Serializable {
 		this.identifier = ++idCounter;
 	}
 
-	public double getIdentifier() {
+	public int getIdentifier() {
 		return identifier;
 	}
 
@@ -111,7 +112,29 @@ public class Task implements Serializable {
 		return completed;
 	}
 
-	public void setCompleted() {
-		this.completed = !this.completed;
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
+
+	  public static String getHeaderTableStringForTask() {
+        return String.format("|%-5.2s|%-40s|%-28s|%-100s|%-8s|%-14s|%-9s|", "ID", "Title", "Date", "Content", "Priority", "Duration (est)", "Completed");
+    }
+
+    public String getAsRowString() {
+		return String.format("|%-5.0f|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, title, date, content, priority, estimatedDuration, completed ? "yes" : "no");
+    }
+
+    public String getInstanceAsDelimitedString(String delimiter) { 
+        return String.format(Locale.ENGLISH, "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
+    }
+
+	public void setIdentifier(int int1) {
+
+		if (int1 < 0) {
+			throw new IllegalArgumentException("Task ID must be positive");
+		}
+
+		this.identifier = int1;
+			
 	}
 }

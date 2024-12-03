@@ -1,7 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.concurrent.Future;
 
 public interface IRepository {
 	Task addTask(Task t) throws RepositoryException;

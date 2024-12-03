@@ -1,6 +1,6 @@
 package controller;
 
-import java.util.Date;
+import java.util.List;
 
 import model.Model;
 import model.Task;
@@ -26,7 +26,7 @@ public class Controller {
 
 		return model.addTask(task);}
 
-	public Task getTaskById(double taskId) {
+	public Task getTaskById(int taskId) {
 		
 		return model.getTaskById(taskId);
 	}
@@ -37,14 +37,13 @@ public class Controller {
 		
 	}
 
-	public void deleteTask(Double taskId) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'deleteTask'");
+	public void deleteTask(int taskId) {
+
+		model.deleteTask(taskId);
 	}
 
-	public boolean isCompleted(double id) {
-		
-		return model.isCompleted(id);
+	public List<Task> getAllTask() {
+		return model.obtenerTasksInmutable();
 	}
 
 

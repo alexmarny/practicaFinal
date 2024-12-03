@@ -4,7 +4,8 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.coti.tools.Rutas;
+import java.util.List;
+
 
 public class Model {
 
@@ -14,7 +15,7 @@ public class Model {
 
 	File ficheroEstadoSerializado;
 
-	private HashMap<Double, Task> taskMap;
+	private HashMap<Integer, Task> taskMap;
 	{
 		taskMap = new HashMap<>();
 	}
@@ -50,12 +51,7 @@ public class Model {
 		}
 	}
 
-	public boolean isCompleted(double id) {
-
-		return taskMap.get(id).isCompleted();
-	}
-
-	public Task getTaskById(double taskId) {
+	public Task getTaskById(int taskId) {
 		try {
 			if (taskMap.containsKey(taskId)) {
 				return taskMap.get(taskId);
@@ -86,7 +82,7 @@ public class Model {
 			task.setEstimatedDuration(Integer.parseInt(value));
 			break;
 		case "completed":
-			task.setCompleted();
+			task.setCompleted(Boolean.parseBoolean(value));
 			break;
 		default:
 			break;
@@ -94,6 +90,37 @@ public class Model {
 		
 		task.setDate(new java.util.Date());
 	}
+
+
+
+	public void deleteTask(int taskId) {
+
+		Task task = taskMap.get(taskId);
+		if (task != null) {
+			taskMap.remove(taskId);
+			tasks.remove(task);
+			try {
+				repository.removeTask(task);
+			} catch (RepositoryException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Task ID not found");
+		}
+	}
+
+	 public List<Task> obtenerTasksInmutable() {
+
+        // Creamos una copia de la lista original
+        List<Task> listaCopia = new ArrayList<>(tasks.size());
+
+        for (Task task : tasks) {
+            listaCopia.add(new Task(task));
+        }
+
+        return listaCopia;
+
+    }
 
 	
 
