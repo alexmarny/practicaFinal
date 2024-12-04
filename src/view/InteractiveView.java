@@ -1,7 +1,7 @@
 package view;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 import com.coti.tools.Esdia;
 
@@ -188,7 +188,7 @@ public class InteractiveView extends BaseView {
 
 	private void subMenuDetalle() {
 		
-		Double taskId = Esdia.readDouble("Introduzca el ID de la tarea a visualizar: ");
+		UUID taskId = UUID.fromString(Esdia.readString_ne("Introduzca el ID de la tarea: "));
 		Task task = controller.getTaskById(taskId);
 
 		if (task == null) {
@@ -219,7 +219,7 @@ public class InteractiveView extends BaseView {
 					controller.deleteTask(taskId);
 					clearTerminal();
 					showMessage("La tarea ha sido eliminada.");
-					return;
+					break;
 				case 4:
 					System.out.println("Volviendo al menú principal...");
 					break;
@@ -320,8 +320,28 @@ public class InteractiveView extends BaseView {
 
 		System.out.println("1. Importar desde fichero CSV");
 		System.out.println("2. Importar desde fichero JSON");
-		int tipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a importar:", 1, 2);
+		int opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a importar:", 1, 2);
+		String tipoArchivo = null;
 
+		do{
+		
+			switch(opcionTipoArchivo){
+				case 1:
+					tipoArchivo = "csv";
+					break;
+				case 2:
+					tipoArchivo = "json";
+					break;
+
+				case 3:
+					System.out.println("Volviendo al menú principal...");
+					break;
+				default:
+					System.out.println("Opción no válida");
+			}
+
+		} while (opcionTipoArchivo <1 || opcionTipoArchivo > 3);
+		
 		String nombreFichero = Esdia.readString_ne("Introduzca el nombre del fichero a importar desde home: ");
 
 		try {
@@ -337,7 +357,29 @@ public class InteractiveView extends BaseView {
 	private void exportarTareas() {
 		System.out.println("1. Exportar a fichero CSV");
 		System.out.println("2. Exportar a fichero JSON");
-		int tipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a exportar:", 1, 2);
+		System.out.println("3. Volver al menú principal");
+
+		int opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a exportar (1 para CSV, 2 para JSON): ", 1, 2);
+		String tipoArchivo = null;
+
+		do{
+		
+			switch(opcionTipoArchivo){
+				case 1:
+					tipoArchivo = "csv";
+					break;
+				case 2:
+					tipoArchivo = "json";
+					break;
+
+				case 3:
+					System.out.println("Volviendo al menú principal...");
+					break;
+				default:
+					System.out.println("Opción no válida");
+			}
+
+		} while (opcionTipoArchivo <1 || opcionTipoArchivo > 3);
 
 		String nombreFichero = Esdia.readString_ne("Introduzca el nombre del fichero a exportar en home: ");
 

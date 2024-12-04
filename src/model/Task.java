@@ -3,15 +3,14 @@ package model;
 import java.io.Serializable;
 import java.util.Date;
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.Locale;
 import java.util.Objects;
 import java.io.Serializable;
+import java.util.UUID;
 
 public class Task implements Serializable {
 
-	private static double idCounter = 0;
-	private Double identifier;
+	private UUID identifier;
 	private String title;
 	private Date date;
 	private String content;
@@ -20,7 +19,7 @@ public class Task implements Serializable {
 	private boolean completed;
 
 	public Task(String title, Date date, String content, int priority, int estimatedDuration, boolean completed) {
-		this.identifier = ++idCounter;
+		this.identifier = UUID.randomUUID();
 		this.title = title;
 		this.date = date;
 		this.content = content;
@@ -62,15 +61,15 @@ public class Task implements Serializable {
     }
 
 	public Task() {
-		this.identifier = ++idCounter;
+		this.identifier = UUID.randomUUID();
 	}
 
-	public Double getIdentifier() {
+	public UUID getIdentifier() {
 		return identifier;
 	}
 
 	public void setIdentifier(Double identifier) {
-		this.identifier = identifier;
+		this.identifier = UUID.randomUUID();
 	}
 
 	public String getTitle() {
@@ -126,7 +125,7 @@ public class Task implements Serializable {
     }
 
     public String getAsRowString() {
-		return String.format("|%-5.0f|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
+		return String.format("|%s|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
     }
 
     public String getInstanceAsDelimitedString(String delimiter) { 

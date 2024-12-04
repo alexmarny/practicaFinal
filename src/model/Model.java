@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 
 public class Model {
@@ -20,7 +21,7 @@ public class Model {
 
 	File ficheroEstadoSerializado;
 
-	private HashMap<Double, Task> taskMap;
+	private HashMap<UUID, Task> taskMap;
 	{
 		taskMap = new HashMap<>();
 	}
@@ -56,7 +57,7 @@ public class Model {
 		}
 	}
 
-	public Task getTaskById(Double taskId) {
+	public Task getTaskById(UUID taskId) {
 		try {
 			if (taskMap.containsKey(taskId)) {
 				return taskMap.get(taskId);
@@ -98,7 +99,7 @@ public class Model {
 
 
 
-	public void deleteTask(Double taskId) {
+	public void deleteTask(UUID taskId) {
 
 		Task task = taskMap.get(taskId);
 		if (task != null) {

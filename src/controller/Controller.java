@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.ArrayList;
 
 import model.Model;
@@ -32,7 +33,7 @@ public class Controller {
 
 		return model.addTask(task);}
 
-	public Task getTaskById(Double taskId) {
+	public Task getTaskById(UUID taskId) {
 		
 		return model.getTaskById(taskId);
 	}
@@ -43,7 +44,7 @@ public class Controller {
 		
 	}
 
-	public void deleteTask(Double taskId) {
+	public void deleteTask(UUID taskId) {
 
 		model.deleteTask(taskId);
 	}
@@ -52,7 +53,7 @@ public class Controller {
 		return model.obtenerTasksInmutable();
 	}
 
-	public void importarTareas(String nombreFichero, int tipoArchivo) {
+	public void importarTareas(String nombreFichero, String tipoArchivo) {
 		IExporter exporter = ExporterFactory.getExporter(String.valueOf(tipoArchivo));
 		try {
 			exporter.importTasks(new ArrayList<>(model.obtenerTasksInmutable()));
@@ -61,7 +62,7 @@ public class Controller {
 		}
 	}
 
-	public void exportarTareas(String nombreFichero, int tipoArchivo) {
+	public void exportarTareas(String nombreFichero, String tipoArchivo) {
 		IExporter exporter = ExporterFactory.getExporter(String.valueOf(tipoArchivo));
 		try {
 			exporter.export(new ArrayList<>(model.obtenerTasksInmutable()));
