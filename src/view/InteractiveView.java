@@ -29,6 +29,7 @@ public class InteractiveView extends BaseView {
 	@Override
 	public void end(String goodbyeMsg) {
 		System.out.println(goodbyeMsg);
+		
 	}
 
 	public void showMenu(){
@@ -93,6 +94,7 @@ public class InteractiveView extends BaseView {
 					break;
 				case 5:
 					System.out.println("Saliendo del programa...");
+					controller.end();
 					break;
 				default:
 					System.out.println("Opción no válida");

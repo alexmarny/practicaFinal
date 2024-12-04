@@ -2,6 +2,8 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Locale;
 import java.util.Objects;
 import java.io.Serializable;
@@ -129,6 +131,33 @@ public class Task implements Serializable {
 
     public String getInstanceAsDelimitedString(String delimiter) { 
         return String.format(Locale.ENGLISH, "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
+    }
+
+	public static Task getPersonFromDelimitedString(String delimitedString, String delimiter) {
+
+        // Con split es posible separar por el delimitador
+        String[] chunks = delimitedString.split(delimiter);
+
+		if (chunks.length != 7) {
+			throw new IllegalArgumentException("Invalid delimited string format");
+		}
+
+		try {
+            // Creamos la tarea
+		Task p = new Task();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+		p.setIdentifier(Double.parseDouble(chunks[0]));
+		p.setTitle(chunks[1]);
+		p.setDate(dateFormat.parse(chunks[2]));
+		p.setContent(chunks[3]);
+		p.setPriority(Integer.parseInt(chunks[4]));
+		p.setEstimatedDuration(Integer.parseInt(chunks[5]));
+		p.setCompleted(chunks[6].equalsIgnoreCase("yes"));
+            return p;
+        } catch (Exception e) {
+            // Tomamos linea como inválida
+            return null;
+        }
     }
 
 }

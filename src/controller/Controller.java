@@ -13,7 +13,6 @@ public class Controller {
 
 	Model model;
 	BaseView view;
-
 	public Controller(Model model, BaseView view) {
 		this.model = model;
 		this.view = view;
@@ -22,7 +21,11 @@ public class Controller {
 	}
 
 	public void init() {
-		view.init("Bienvenido a la aplicación de tareas");
+		if(model.cargarTareas()){
+            view.init("Cargado estado anterior con exito");
+        }else{
+            view.init("No se encontró fichero para carga del programa");
+        }
 	}
 
 	public boolean addTask(Task task) {
@@ -67,5 +70,15 @@ public class Controller {
 		}
 	}
 
+	public void end() {
+
+        // Guardado final del programa
+        if(model.guardarTareas()){
+            view.end("Guardado el estado de la aplicación.\nSaliendo...");
+        }else{
+            view.end("No se pudo guardar el estado de la aplicación.\nSaliendo...");
+        }
+
+	}
 
 }

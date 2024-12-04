@@ -6,23 +6,30 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
+import java.io.File;
 
 
 public class BinaryRepository implements IRepository{
 	
 	private ArrayList<Task> tasks;
-	
-	public BinaryRepository() {
+
+	private final String path = System.getProperty("user.home") + File.separator +"tasks.bin";
+
+	public BinaryRepository( int taskNum) {
 		tasks = new ArrayList<Task>();
+		for (int i = 0; i < taskNum; i++) {
+            tasks.add(new Task("Task " + i, null, "Content " + i, 1, 1, false));
+        }
 	}
 	
 	@Override
 	public Task addTask(Task t) throws RepositoryException {
-		if (tasks.contains(t)) {
-			throw new RepositoryException("Task already exists");
-		}
 		tasks.add(t);
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path))) {
+			oos.writeObject(tasks);
+		} catch (IOException e) {
+			throw new RepositoryException("Error writing tasks to binary file", e);
+		}
 		return t;
 	}
 
@@ -32,6 +39,11 @@ public class BinaryRepository implements IRepository{
 			throw new RepositoryException("Task does not exist");
 		}
 		tasks.remove(t);
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path))) {
+			oos.writeObject(tasks);
+		} catch (IOException e) {
+			throw new RepositoryException("Error deleting task from binary file", e);
+		}
 	}
 
 	@Override
@@ -41,43 +53,28 @@ public class BinaryRepository implements IRepository{
 		}
 		tasks.remove(t);
 		tasks.add(t);
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path))) {
+			oos.writeObject(tasks);
+		} catch (IOException e) {
+			throw new RepositoryException("Error modifying task in binary file", e);
+		}
 	}
 
 	@Override
 	public ArrayList<Task> getAllTask() throws RepositoryException {
-		return tasks;
-	}
-	
-	public void saveToFile(String path) throws IOException {
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path))) {
-			oos.writeObject(tasks);
-		}
-	}
-	
-	public void loadFromFile(String path) throws IOException, ClassNotFoundException {
+
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {
 			tasks = (ArrayList<Task>) ois.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			throw new RepositoryException("Error reading tasks from binary file", e);
 		}
+		return tasks;
 	}
+
+
 	
-	public CompletableFuture<Void> saveToFileAsync(String path) {
-		return CompletableFuture.runAsync(() -> {
-			try {
-				saveToFile(path);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
 	
-	public CompletableFuture<Void> loadFromFileAsync(String path) {
-		return CompletableFuture.runAsync(() -> {
-			try {
-				loadFromFile(path);
-			} catch (IOException | ClassNotFoundException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
+	
+
 
 }

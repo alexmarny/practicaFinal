@@ -15,7 +15,7 @@ public class App {
 		/**
 		 * @param args the command line arguments
 		 */
-		
+
 		public static void main(String[] args) {
 			
 			IRepository repository;
@@ -30,7 +30,7 @@ public class App {
 			}else{
 				// Opciones por defecto:
 				view = new InteractiveView();
-				repository = new BinaryRepository();
+				repository = new BinaryRepository(10);
 			}
 			
 			Model model = new Model(repository);
@@ -45,10 +45,10 @@ public class App {
 					return new NotionRepository();
 
 				case "bin":
-					return new BinaryRepository();
+					return new BinaryRepository( 10);
 
 				default:
-					return new BinaryRepository();
+					return new BinaryRepository( 10);
 			}
 		}
 	
