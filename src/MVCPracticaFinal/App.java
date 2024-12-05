@@ -21,7 +21,7 @@ public class App {
 		public static void main(String[] args) {
 			
 			IRepository repository;
-			BaseView view;
+			BaseView view; 
 			
 			// LLamada esperada java -jar app.jar view repository
 			// por ejemplo: java -jar app.jar bin 
@@ -31,7 +31,7 @@ public class App {
 				
 			}else{
 				// Opciones por defecto:
-				view = new InteractiveView();
+				view = new ttsView();
 				repository = new BinaryRepository(10);
 			}
 			

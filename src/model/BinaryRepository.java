@@ -61,6 +61,7 @@ public class BinaryRepository implements IRepository{
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public ArrayList<Task> getAllTask() throws RepositoryException {
 
 		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {

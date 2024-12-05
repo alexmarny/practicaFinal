@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.coti.tools.Esdia;
-
 import model.Task;
 
 public class InteractiveView extends BaseView {
@@ -187,14 +186,22 @@ public class InteractiveView extends BaseView {
 	 */
 
 	private void subMenuDetalle() {
-		
-		UUID taskId = UUID.fromString(Esdia.readString_ne("Introduzca el ID de la tarea: "));
-		Task task = controller.getTaskById(taskId);
 
-		if (task == null) {
-			showErrorMessage("No se encontró la tarea con ID: " + taskId);
+		String taskIdString = Esdia.readString_ne("Introduzca el ID de la tarea: ");
+		Task task = null;
+		UUID taskId = null;
+		try {
+			taskId = UUID.fromString(taskIdString);
+			task = controller.getTaskById(taskId);
+		} catch (IllegalArgumentException e) {
+			showErrorMessage("ID de tarea no válido.");
+			return;
+		} catch (Exception e) {
+			showErrorMessage("Error al obtener la tarea: " + e.getMessage());
 			return;
 		}
+
+
 
 		int option;
 		do {
@@ -219,6 +226,7 @@ public class InteractiveView extends BaseView {
 					controller.deleteTask(taskId);
 					clearTerminal();
 					showMessage("La tarea ha sido eliminada.");
+
 					break;
 				case 4:
 					System.out.println("Volviendo al menú principal...");
@@ -295,9 +303,9 @@ public class InteractiveView extends BaseView {
 	}
 	
 	private void menuImportarExportar() {
-		System.out.println("1. Importar tareas");
-		System.out.println("2. Exportar tareas");
-		System.out.println("3. Volver al menú principal");
+		showMessage("1. Importar tareas");
+		showMessage("2. Exportar tareas");
+		showMessage("3. Volver al menú principal");
 
 		int option = Esdia.readInt("Seleccione una opción: ", 1, 3);
 
@@ -345,7 +353,7 @@ public class InteractiveView extends BaseView {
 		String nombreFichero = Esdia.readString_ne("Introduzca el nombre del fichero a importar desde home: ");
 
 		try {
-			controller.importarTareas(nombreFichero, tipoArchivo);			
+			controller.importarTareas(nombreFichero, tipoArchivo);
 			showMessage("Tareas importadas correctamente");
 		} catch (Exception e) {
 			showErrorMessage("Error al importar tareas: " + e.getMessage());

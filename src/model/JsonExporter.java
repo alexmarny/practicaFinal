@@ -13,8 +13,8 @@ import java.util.List;
 public class JsonExporter implements IExporter {
 
 	@Override
-	public void export(ArrayList<Task> tasks) throws ExporterException {
-		String filePath = "tasks.json";
+	public void export(ArrayList<Task> tasks, String fileName) throws ExporterException {
+		String filePath = System.getProperty("user.home") + "/Desktop/" + fileName + ".json";
 		Gson gson = new Gson();
 		String json = gson.toJson(tasks);
 		try (FileWriter writer = new FileWriter(filePath)) {
@@ -25,8 +25,8 @@ public class JsonExporter implements IExporter {
 	}
 
 	@Override
-	public void importTasks(ArrayList<Task> tasks) throws ExporterException {
-		String filePath = "tasks.json";
+	public void importTasks(ArrayList<Task> tasks, String fileName) throws ExporterException {
+		String filePath = System.getProperty("user.home") + "/Desktop/" + fileName + ".json";
 		Gson gson = new Gson();
 		try (FileReader reader = new FileReader(filePath)) {
 			Type taskListType = new TypeToken<List<Task>>() {}.getType();

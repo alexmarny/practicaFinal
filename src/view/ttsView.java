@@ -12,38 +12,43 @@ import io.github.jonelo.jAdapterForNativeTTS.engines.VoicePreferences;
 import io.github.jonelo.jAdapterForNativeTTS.engines.exceptions.SpeechEngineCreationException;
 import model.Task;
 import java.util.UUID;
+import controller.Controller;
 
 public class ttsView extends BaseView {
 
 	SpeechEngine speechEngine;
+	private Controller controller;
+
+	public ttsView(Controller controller) {
+		this.controller = controller;
+	}
 
 	//METODO CONSTUCTOR PARA TTS
 
 	public ttsView() {
-		String text = "Bienvenido a la aplicación de tareas por voz.";
-		try {
-			this.speechEngine = SpeechEngineNative.getInstance();
-			List<Voice> voices = speechEngine.getAvailableVoices();
 
+		try {
+			speechEngine = SpeechEngineNative.getInstance();
+			List<Voice> voices = speechEngine.getAvailableVoices();
+	
 			// We want to find a voice according our preferences
 			VoicePreferences voicePreferences = new VoicePreferences();
 			voicePreferences.setLanguage("es"); //  ISO-639-1
 			voicePreferences.setCountry("ES"); // ISO 3166-1 Alpha-2 code
+			voicePreferences.setAge(VoicePreferences.Age.ADULT);
 			voicePreferences.setGender(VoicePreferences.Gender.MALE);
 			Voice voice = speechEngine.findVoiceByPreferences(voicePreferences);
-
+	
 			// simple fallback just in case our preferences didn't match any voice
 			if (voice == null) {
 				System.out.printf("Warning: Voice has not been found by the voice preferences %s%n", voicePreferences);
 				voice = voices.get(0); // it is guaranteed that the speechEngine supports at least one voice
 				System.out.printf("Using \"%s\" instead.%n", voice);
 			}
-
+	
 			speechEngine.setVoice(voice.getName());
-			speechEngine.say(text);
-			Thread.sleep(2000); // tiempo entre mensaje de bienvenida y menu
-
-		} catch (SpeechEngineCreationException | IOException | InterruptedException e) {
+	
+		} catch (SpeechEngineCreationException e) {
 			System.err.println(e.getMessage());
 		}
 	}
@@ -80,22 +85,44 @@ public class ttsView extends BaseView {
 	public void end(String goodbyeMsg) {
 		System.out.println(goodbyeMsg);
 	}
+
+	public void sleep(int seconds) {
+		try {
+			Thread.sleep(seconds * 1000);
+		} catch (InterruptedException e) {
+			System.err.println("Sleep interrupted: " + e.getMessage());
+		}
+	}
 	
 	public void showMenu() {
 
 		int opcion;
 
-		String menu = "1. Alta de tarea\n" + "2. Listado de tareas\n" + "3. Detalle de tarea\n" + "4. Importar o exportar tareas\n"
-				+ "5. Salir\n" + "Seleccione una opción: ";
+		String menuOption1 = "1. Alta de tarea\n";
+		String menuOption2 = "2. Listado de tareas\n";
+		String menuOption3 = "3. Detalle de tarea\n";
+		String menuOption4 = "4. Importar o exportar tareas\n";
+		String menuOption5 = "5. Salir\n";
+		String menu = menuOption1 + menuOption2 + menuOption3 + menuOption4 + menuOption5;
 		System.out.println(menu);
 
-		decir(menu);
-
+		decir("Bienvenido a la aplicación de tareas por voz. Seleccione una opción: ");
+		sleep(5);
+		decir(menuOption1);
+		sleep(2);
+		decir(menuOption2);
+		sleep(2);
+		decir(menuOption3);
+		sleep(2);
+		decir(menuOption4);
+		sleep(3);
+		decir(menuOption5);
+		sleep(2);
+		
+		
 		do{
 
-		opcion = Esdia.readInt(null);
-
-		decir("Ha seleccionado la opción " + opcion);
+		opcion = Esdia.readInt("Seleccione una opción: ");
 
 		switch (opcion) {
 		case 1:
@@ -217,15 +244,25 @@ public class ttsView extends BaseView {
 	}
 
 	public void subMenuDetalle(){
-		UUID taskId = UUID.fromString(Esdia.readString_ne("Introduzca el ID de la tarea: "));
-		Task task = controller.getTaskById(taskId);
-		if (task == null) {
-			showErrorMessage("No se encontró ninguna tarea con el ID proporcionado.");
-			decir("No se encontró ninguna tarea con el ID proporcionado.");
-		} else {
-			showMessage("Tarea encontrada: " + task.toString());
-			decir("Tarea encontrada: " + task.toString());
-			modifyTaskMenu(task);
+	
+		String taskId = Esdia.readString_ne("Introduzca el ID de la tarea: ");
+
+		decir("Introduzca el ID de la tarea.");
+
+		try {
+			UUID taskUUID = UUID.fromString(taskId);
+			Task task = controller.getTaskById(taskUUID);
+			if (task == null) {
+				showErrorMessage("No se encontró ninguna tarea con el ID proporcionado.");
+				decir("No se encontró ninguna tarea con el ID proporcionado.");
+			} else {
+				showMessage("Tarea encontrada: " + task.toString());
+				decir("Tarea encontrada: " + task.toString());
+				modifyTaskMenu(task);
+			}
+		} catch (IllegalArgumentException e) {
+			showErrorMessage("El ID proporcionado no es un UUID válido.");
+			decir("El ID proporcionado no es un UUID válido.");
 		}
 
 	}

@@ -5,7 +5,6 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Objects;
-import java.io.Serializable;
 import java.util.UUID;
 
 public class Task implements Serializable {
@@ -19,6 +18,7 @@ public class Task implements Serializable {
 	private boolean completed;
 
 	public Task(String title, Date date, String content, int priority, int estimatedDuration, boolean completed) {
+	
 		this.identifier = UUID.randomUUID();
 		this.title = title;
 		this.date = date;
@@ -68,8 +68,8 @@ public class Task implements Serializable {
 		return identifier;
 	}
 
-	public void setIdentifier(Double identifier) {
-		this.identifier = UUID.randomUUID();
+	public void setIdentifier(UUID identifier) {
+		this.identifier = identifier;
 	}
 
 	public String getTitle() {
@@ -132,7 +132,7 @@ public class Task implements Serializable {
         return String.format(Locale.ENGLISH, "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
     }
 
-	public static Task getPersonFromDelimitedString(String delimitedString, String delimiter) {
+	public static Task getTaskFromDelimitedString(String delimitedString, String delimiter) {
 
         // Con split es posible separar por el delimitador
         String[] chunks = delimitedString.split(delimiter);
@@ -145,7 +145,7 @@ public class Task implements Serializable {
             // Creamos la tarea
 		Task p = new Task();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
-		p.setIdentifier(Double.parseDouble(chunks[0]));
+		p.setIdentifier(UUID.fromString(chunks[0]));
 		p.setTitle(chunks[1]);
 		p.setDate(dateFormat.parse(chunks[2]));
 		p.setContent(chunks[3]);

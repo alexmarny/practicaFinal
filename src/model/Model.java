@@ -26,7 +26,6 @@ public class Model {
 		taskMap = new HashMap<>();
 	}
 
-	
 
 	public Model(IRepository repository) {
 		this.repository = repository;
@@ -117,68 +116,71 @@ public class Model {
 
 	 public List<Task> obtenerTasksInmutable() {
 
-        // Creamos una copia de la lista original
-        List<Task> listaCopia = new ArrayList<>(tasks.size());
+		// Creamos una copia de la lista original
+		List<Task> listaCopia = new ArrayList<>(tasks.size());
 
-        for (Task task : tasks) {
-            listaCopia.add(new Task(task));
-        }
+		for (Task task : tasks) {
+			listaCopia.add(new Task(task));
+		}
 
-        return listaCopia;
+		return listaCopia;
 
-    }
-
+	}
+	
+	@SuppressWarnings("unchecked")
 	public boolean cargarTareas() {
 
-        if (ficheroEstadoSerializado.exists() && ficheroEstadoSerializado.isFile()) {
-            ObjectInputStream ois = null;
-            try {
-                ois = new ObjectInputStream(new FileInputStream(ficheroEstadoSerializado));
-                this.tasks = (ArrayList<Task>) ois.readObject();
-            } catch (IOException | ClassNotFoundException ex) {
-                // Dejamos el error para la depuración, por el canal err.
-                System.err.println("Error durante la deserialización: " + ex.getMessage());
-                return false;
-            } finally {
-                if (ois != null) {
-                    try {
-                        ois.close();
-                    } catch (IOException ex) {
-                        // Dejamos el error para la depuración, por el canal err.
-                        System.err.println("Error durante la deserialización: " + ex.getMessage());
-                        return false;
-                    }
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
+		if (ficheroEstadoSerializado.exists() && ficheroEstadoSerializado.isFile()) {
+			ObjectInputStream ois = null;
+			try {
+				ois = new ObjectInputStream(new FileInputStream(ficheroEstadoSerializado));
+				this.tasks = (ArrayList<Task>) ois.readObject();
+				this.taskMap = (HashMap<UUID, Task>) ois.readObject();
+			} catch (IOException | ClassNotFoundException ex) {
+				// Dejamos el error para la depuración, por el canal err.
+				System.err.println("Error durante la deserialización: " + ex.getMessage());
+				return false;
+			} finally {
+				if (ois != null) {
+					try {
+						ois.close();
+					} catch (IOException ex) {
+						// Dejamos el error para la depuración, por el canal err.
+						System.err.println("Error durante la deserialización: " + ex.getMessage());
+						return false;
+					}
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
 
-    }
+	}
 
 	public boolean guardarTareas() {
 
-        ObjectOutputStream oos = null;
-        try {
-            oos = new ObjectOutputStream(new FileOutputStream(ficheroEstadoSerializado));
-            oos.writeObject(tasks);
-            return true;
-        } catch (IOException ex) {
-            // Dejamos el error para la depuración, por el canal err.
-            System.err.println("Error durante la serialización: " + ex.getMessage());
-            return false;
-        } finally {
-            if (oos != null) {
-                try {
-                    oos.close();
-                } catch (IOException ex) {
-                    // Dejamos el error para la depuración, por el canal err.
-                    System.err.println("Error al cerrar el flujo: " + ex.getMessage());
-                    return false;
-                }
-            }
-        }
+		ObjectOutputStream oos = null;
+		try {
+			oos = new ObjectOutputStream(new FileOutputStream(ficheroEstadoSerializado));
+			oos.writeObject(tasks);
+			oos.writeObject(taskMap);
+			return true;
+		} catch (IOException ex) {
+			// Dejamos el error para la depuración, por el canal err.
+			System.err.println("Error durante la serialización: " + ex.getMessage());
+			return false;
+		} finally {
+			if (oos != null) {
+				try {
+					oos.close();
+				} catch (IOException ex) {
+					// Dejamos el error para la depuración, por el canal err.
+					System.err.println("Error al cerrar el flujo: " + ex.getMessage());
+					return false;
+				}
+			}
+		}
 	}
 
 }
