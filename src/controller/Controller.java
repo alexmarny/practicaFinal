@@ -55,8 +55,9 @@ public class Controller {
 
 	public void importarTareas(String nombreFichero, String tipoArchivo) {
 		IExporter exporter = ExporterFactory.getExporter(String.valueOf(tipoArchivo));
+		
 		try {
-			exporter.importTasks(new ArrayList<>(model.obtenerTasksInmutable()), nombreFichero);
+			exporter.importTasks(nombreFichero);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
