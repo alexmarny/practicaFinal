@@ -72,6 +72,7 @@ public class CsvExporter implements IExporter {
 				task.setEstimatedDuration(Integer.parseInt(fields[5]));
 				task.setCompleted(Boolean.parseBoolean(fields[6]));
 				tasks.add(task);
+				System.out.println(task);
 			}
 		}
 	}

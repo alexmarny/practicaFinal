@@ -367,7 +367,7 @@ public class InteractiveView extends BaseView {
 		System.out.println("2. Exportar a fichero JSON");
 		System.out.println("3. Volver al menú principal");
 
-		int opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a exportar (1 para CSV, 2 para JSON): ", 1, 2);
+		int opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a exportar (1 para CSV, 2 para JSON): ", 1, 3);
 		String tipoArchivo = null;
 
 		do{
@@ -382,7 +382,7 @@ public class InteractiveView extends BaseView {
 
 				case 3:
 					System.out.println("Volviendo al menú principal...");
-					break;
+					return;
 				default:
 					System.out.println("Opción no válida");
 			}

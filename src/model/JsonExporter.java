@@ -34,9 +34,11 @@ public class JsonExporter implements IExporter {
 		Type taskListType = new TypeToken<ArrayList<Task>>() {}.getType();
 		try (FileReader reader = new FileReader(filePath)) {
 			List<Task> tasks = gson.fromJson(reader, taskListType);
+			List<Task> importedTasks = new ArrayList<>();
 			for (Task t : tasks) {
-				tasks.add(t);
-			}
+				importedTasks.add(t);
+				
+			} System.out.println(importedTasks.toArray());
 		} catch (IOException e) {
 			throw new ExporterException("Error importing tasks from JSON", e);
 		}
