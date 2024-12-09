@@ -234,7 +234,7 @@ public class InteractiveView extends BaseView {
 				default:
 					System.out.println("Opción no válida");
 			}
-		} while (option != 4);
+		} while (option != 4 && option != 3);
 	}
 
 	/*

@@ -121,11 +121,11 @@ public class Task implements Serializable {
 	}
 
 	  public static String getHeaderTableStringForTask() {
-        return String.format("|%-5s|%-40s|%-28s|%-100s|%-8s|%-14s|%-9s|", "ID", "Title", "Date", "Content", "Priority", "Duration (est)", "Completed");
+        return String.format("|%-23s|%-40s|%-28s|%-100s|%-8s|%-14s|%-9s|", "ID", "Title", "Date", "Content", "Priority", "Duration (est)", "Completed");
     }
 
     public String getAsRowString() {
-		return String.format("|%s|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
+		return String.format("|%-23s|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
     }
 
     public String getInstanceAsDelimitedString(String delimiter) { 
