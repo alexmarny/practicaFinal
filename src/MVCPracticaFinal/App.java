@@ -31,8 +31,8 @@ public class App {
 				
 			}else{
 				// Opciones por defecto:
-				view = new ttsView();
-				repository = new BinaryRepository(10);
+				view = new InteractiveView();
+				repository = new BinaryRepository();
 			}
 			
 			Model model = new Model(repository);
@@ -47,10 +47,10 @@ public class App {
 					return new NotionRepository();
 
 				case "bin":
-					return new BinaryRepository( 10);
+					return new BinaryRepository();
 
 				default:
-					return new BinaryRepository( 10);
+					return new BinaryRepository();
 			}
 		}
 	

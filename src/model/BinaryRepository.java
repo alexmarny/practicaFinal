@@ -15,11 +15,8 @@ public class BinaryRepository implements IRepository{
 
 	private final String path = System.getProperty("user.home") + File.separator +"tasks.bin";
 
-	public BinaryRepository( int taskNum) {
-		tasks = new ArrayList<Task>();
-		for (int i = 0; i < taskNum; i++) {
-            tasks.add(new Task("Task " + i, null, "Content " + i, 1, 1, false));
-        }
+	public BinaryRepository() {
+		tasks = new ArrayList<>();
 	}
 	
 	@Override
