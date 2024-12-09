@@ -328,7 +328,7 @@ public class InteractiveView extends BaseView {
 
 		System.out.println("1. Importar desde fichero CSV");
 		System.out.println("2. Importar desde fichero JSON");
-		int opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a importar:", 1, 2);
+		int opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a importar:", 1, 3);
 		String tipoArchivo = null;
 
 		do{
@@ -343,7 +343,7 @@ public class InteractiveView extends BaseView {
 
 				case 3:
 					System.out.println("Volviendo al menú principal...");
-					break;
+					return;
 				default:
 					System.out.println("Opción no válida");
 			}

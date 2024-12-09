@@ -15,31 +15,31 @@ import java.util.UUID;
 
 public class Model {
 
-	private IRepository repository;
+	private static IRepository repository;
 
-	private ArrayList<Task> tasks;
+	private static ArrayList<Task> tasks;
 
 	File ficheroEstadoSerializado;
 
-	private HashMap<UUID, Task> taskMap;
+	private static HashMap<UUID, Task> taskMap;
 	{
 		taskMap = new HashMap<>();
 	}
 
 
 	public Model(IRepository repository) {
-		this.repository = repository;
+		Model.repository = repository;
 		ficheroEstadoSerializado = Paths.get(System.getProperty("user.home"), "Desktop", "tasks.bin").toFile();
 		tasks = new ArrayList<Task>();
 	}
 
 	
 
-	public boolean addTask(Task task) {
+	public static boolean addTask(Task task) {
 
 		try {
 			if (taskMap.containsKey(task.getIdentifier())) {
-				throw new IllegalArgumentException("Task ID already exists");
+				throw new IllegalArgumentException("Task ID: already exists");
 			}
 			taskMap.put(task.getIdentifier(), task);
 		} catch (IllegalArgumentException e) {

@@ -343,7 +343,7 @@ public class ttsView extends BaseView {
 				+ "Seleccione una opción: ";
 		System.out.println(menu);
 		decir(menu);
-		opcion = Esdia.readInt(null);
+		opcion = Esdia.readInt(null, 1, 3);
 		decir("Ha seleccionado la opción " + opcion);
 		switch (opcion) {
 		case 1:
@@ -377,7 +377,7 @@ public class ttsView extends BaseView {
 
 		do{
 
-			opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a importar:", 1, 2);
+			opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a importar:", 1, 3);
 
 			switch (opcionTipoArchivo) {
 				case 1:
@@ -427,7 +427,7 @@ public class ttsView extends BaseView {
 		String tipoArchivo = null;
 
 		do{
-			opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a exportar:", 1, 2);
+			opcionTipoArchivo = Esdia.readInt("Introduzca el tipo de archivo a exportar:", 1, 3);
 
 			switch (opcionTipoArchivo) {
 				case 1:

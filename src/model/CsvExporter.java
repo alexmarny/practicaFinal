@@ -54,7 +54,6 @@ public class CsvExporter implements IExporter {
 			throw new ExporterException("Error reading tasks from CSV", e);
 		}
 
-		ArrayList<Task> tasks = new ArrayList<>();
 		for (String line : lines.subList(1, lines.size())) { // Skip header line
 			String[] fields = line.split(";");
 			if (fields.length == 7) {
@@ -71,10 +70,17 @@ public class CsvExporter implements IExporter {
 				task.setPriority(Integer.parseInt(fields[4]));
 				task.setEstimatedDuration(Integer.parseInt(fields[5]));
 				task.setCompleted(Boolean.parseBoolean(fields[6]));
-				tasks.add(task);
-				System.out.println(task);
+				
+				Model.addTask(task);
+
+			} else {
+				throw new ExporterException("Invalid CSV format");
+				
+
 			}
 		}
 	}
+
+	
 
 }
