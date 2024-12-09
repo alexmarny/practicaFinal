@@ -31,7 +31,7 @@ public class Controller {
 
 	public boolean addTask(Task task) {
 
-		return model.addTask(task);}
+		return Model.addTask(task);}
 
 	public Task getTaskById(UUID taskId) {
 		
