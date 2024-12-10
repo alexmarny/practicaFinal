@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Date;
 
 
 public class NotionRepository implements IRepository {
@@ -84,8 +85,27 @@ public class NotionRepository implements IRepository {
 
 	@Override
 	public ArrayList<Task> getAllTask() throws RepositoryException {
-		// TODO Auto-generated method stub
-		return null;
+
+		ArrayList<Task> tasks = new ArrayList<>();
+		try {
+			// Crear la solicitud para consultar la base de datos
+			QueryDatabaseRequest queryRequest = new QueryDatabaseRequest(databaseId);
+
+			// Ejecutar la consulta
+			QueryResults queryResults = client.queryDatabase(queryRequest);
+
+			// Procesar los resultados
+			for (Page page : queryResults.getResults()) {
+				Map<String, PageProperty> properties = page.getProperties();
+				Task Task = mapPageToTask(page.getId(), properties);
+				if (Task != null) {
+					tasks.add(Task);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return tasks;
 	}
 
 	// Métodos auxiliares para crear propiedades de página
@@ -129,15 +149,40 @@ public class NotionRepository implements IRepository {
     private Task mapPageToTask(String pageId, Map<String, PageProperty> properties) {
         try {
             Task task = new Task();
-            task.setIdentifier(UUID.fromString(properties.get("Identifier").getTitle().get(0).getText().getContent()));
-            task.setTitle(properties.get("Tarea").getRichText().get(0).getText().getContent());
-			task.setDate(java.sql.Date.valueOf(properties.get("Fecha").getDate().getStart()));
-			task.setContent(properties.get("Contenido").getRichText().get(0).getText().getContent());
-			task.setPriority(properties.get("Prioridad").getNumber().intValue());
-			task.setEstimatedDuration(properties.get("Duración estimada").getNumber().intValue());
-			task.setCompleted(properties.get("Completada").getCheckbox());
+
+				PageProperty identifierProperty = properties.get("Identifier");
+				if (identifierProperty != null && !identifierProperty.getTitle().isEmpty()) {
+					task.setIdentifier(UUID.fromString(identifierProperty.getTitle().get(0).getText().getContent()));
+				} else {
+					task.setIdentifier(UUID.randomUUID());
+				}
+            
+                if (properties.get("Tarea") != null && !properties.get("Tarea").getRichText().isEmpty()) {
+                    task.setTitle(properties.get("Tarea").getRichText().get(0).getText().getContent());
+                }
+                
+                if (properties.get("Fecha") != null && properties.get("Fecha").getDate() != null) {
+                    task.setDate(Date.from(java.time.OffsetDateTime.parse(properties.get("Fecha").getDate().getStart()).toInstant()));
+                }
+                
+                if (properties.get("Descripcion") != null && !properties.get("Descripcion").getRichText().isEmpty()) {
+                    task.setContent(properties.get("Descripcion").getRichText().get(0).getText().getContent());
+                }
+                
+                if (properties.get("Prioridad") != null) {
+                    task.setPriority(properties.get("Prioridad").getNumber().intValue());
+                }
+                
+                if (properties.get("Tiempo estimado") != null) {
+                    task.setEstimatedDuration(properties.get("Tiempo estimado").getNumber().intValue());
+                }
+                
+                if (properties.get("Completado") != null) {
+                    task.setCompleted(properties.get("Completado").getCheckbox());
+                }
 
             return task;
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;

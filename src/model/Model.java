@@ -17,11 +17,11 @@ public class Model {
 
 	private static IRepository repository;
 
-	private static ArrayList<Task> tasks;
+	protected static ArrayList<Task> tasks;
 
 	File ficheroEstadoSerializado;
 
-	private static HashMap<UUID, Task> taskMap;
+	protected static HashMap<UUID, Task> taskMap;
 	{
 		taskMap = new HashMap<>();
 	}
@@ -127,52 +127,17 @@ public class Model {
 
 	}
 	
-	@SuppressWarnings("unchecked")
 	public boolean cargarTareas() {
-
-		if (repository instanceof NotionRepository) {
-			try {
-				NotionRepository notionRepository = (NotionRepository) repository;
-				List<Task> notionTasks = notionRepository.getAllTasks();
-				for (Task task : notionTasks) {
-					taskMap.put(task.getIdentifier(), task);
-					tasks.add(task);
-				}
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				return false;
-			}
-		}
-
-
-		if (ficheroEstadoSerializado.exists() && ficheroEstadoSerializado.isFile()) {
-			ObjectInputStream ois = null;
-			try {
-				ois = new ObjectInputStream(new FileInputStream(ficheroEstadoSerializado));
-				Model.tasks = (ArrayList<Task>) ois.readObject();
-				Model.taskMap = (HashMap<UUID, Task>) ois.readObject();
-			} catch (IOException | ClassNotFoundException ex) {
-				// Dejamos el error para la depuración, por el canal err.
-				System.err.println("Error durante la deserialización: " + ex.getMessage());
-				return false;
-			} finally {
-				if (ois != null) {
-					try {
-						ois.close();
-					} catch (IOException ex) {
-						// Dejamos el error para la depuración, por el canal err.
-						System.err.println("Error durante la deserialización: " + ex.getMessage());
-						return false;
-					}
-				}
-			}
+		try {
+			repository.getAllTask().forEach(task -> {
+				tasks.add(task);
+				taskMap.put(task.getIdentifier(), task);
+			});
 			return true;
-		} else {
+		} catch (RepositoryException e) {
+			e.printStackTrace();
 			return false;
 		}
-
-		
 	}
 
 	public boolean guardarTareas() {

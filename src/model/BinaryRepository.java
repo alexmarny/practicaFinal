@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 import java.io.File;
 
 
@@ -24,6 +26,7 @@ public class BinaryRepository implements IRepository{
 		tasks.add(t);
 		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path))) {
 			oos.writeObject(tasks);
+			oos.writeObject(Model.taskMap);
 		} catch (IOException e) {
 			throw new RepositoryException("Error writing tasks to binary file", e);
 		}
@@ -61,20 +64,18 @@ public class BinaryRepository implements IRepository{
 	@SuppressWarnings("unchecked")
 	public ArrayList<Task> getAllTask() throws RepositoryException {
 
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {
-			tasks = (ArrayList<Task>) ois.readObject();
-		} catch (IOException | ClassNotFoundException e) {
-			throw new RepositoryException("Error reading tasks from binary file", e);
+		File ficheroEstadoSerializado = new File(path);
+
+		if (ficheroEstadoSerializado.exists() && ficheroEstadoSerializado.isFile()) {
+			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ficheroEstadoSerializado))) {
+				tasks = (ArrayList<Task>) ois.readObject();
+				Model.taskMap = (HashMap<UUID, Task>) ois.readObject();
+			} catch (IOException | ClassNotFoundException ex) {
+				// Dejamos el error para la depuración, por el canal err.
+				System.err.println("Error durante la deserialización: " + ex.getMessage());
+				return tasks;
+			}
 		}
 		return tasks;
 	}
-
-	
-
-
-	
-	
-	
-
-
 }
