@@ -130,12 +130,28 @@ public class Model {
 	@SuppressWarnings("unchecked")
 	public boolean cargarTareas() {
 
+		if (repository instanceof NotionRepository) {
+			try {
+				NotionRepository notionRepository = (NotionRepository) repository;
+				List<Task> notionTasks = notionRepository.getAllTasks();
+				for (Task task : notionTasks) {
+					taskMap.put(task.getIdentifier(), task);
+					tasks.add(task);
+				}
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+
 		if (ficheroEstadoSerializado.exists() && ficheroEstadoSerializado.isFile()) {
 			ObjectInputStream ois = null;
 			try {
 				ois = new ObjectInputStream(new FileInputStream(ficheroEstadoSerializado));
-				this.tasks = (ArrayList<Task>) ois.readObject();
-				this.taskMap = (HashMap<UUID, Task>) ois.readObject();
+				Model.tasks = (ArrayList<Task>) ois.readObject();
+				Model.taskMap = (HashMap<UUID, Task>) ois.readObject();
 			} catch (IOException | ClassNotFoundException ex) {
 				// Dejamos el error para la depuración, por el canal err.
 				System.err.println("Error durante la deserialización: " + ex.getMessage());
@@ -156,6 +172,7 @@ public class Model {
 			return false;
 		}
 
+		
 	}
 
 	public boolean guardarTareas() {
@@ -181,6 +198,7 @@ public class Model {
 				}
 			}
 		}
+
 	}
 
 }

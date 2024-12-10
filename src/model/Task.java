@@ -10,17 +10,17 @@ import java.util.UUID;
 public class Task implements Serializable {
 
 	private UUID identifier;
-	private String title;
+	private String taskTitle;
 	private Date date;
 	private String content;
 	private int priority;
 	private int estimatedDuration;
 	private boolean completed;
 
-	public Task(String title, Date date, String content, int priority, int estimatedDuration, boolean completed) {
+	public Task(String taskTitle, Date date, String content, int priority, int estimatedDuration, boolean completed) {
 	
 		this.identifier = UUID.randomUUID();
-		this.title = title;
+		this.taskTitle = taskTitle;
 		this.date = date;
 		this.content = content;
 		setPriority(priority);
@@ -30,7 +30,7 @@ public class Task implements Serializable {
 
 	public Task(Task other) {
 		this.identifier = other.identifier;
-		this.title = other.title;
+		this.taskTitle = other.taskTitle;
 		this.date = new Date(other.date.getTime());
 		this.content = other.content;
 		this.priority = other.priority;
@@ -73,11 +73,11 @@ public class Task implements Serializable {
 	}
 
 	public String getTitle() {
-		return title;
+		return taskTitle;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setTitle(String taskTitle) {
+		this.taskTitle = taskTitle;
 	}
 
 	public Date getDate() {
@@ -125,11 +125,11 @@ public class Task implements Serializable {
     }
 
     public String getAsRowString() {
-		return String.format("|%-23s|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
+		return String.format("|%-23s|%-40s|%-28s|%-100s|%-8d|%-14d|%-9s|", identifier, taskTitle, date, content, priority, estimatedDuration, completed? "yes" : "no");
     }
 
     public String getInstanceAsDelimitedString(String delimiter) { 
-        return String.format(Locale.ENGLISH, "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s", identifier, title, date, content, priority, estimatedDuration, completed? "yes" : "no");
+        return String.format(Locale.ENGLISH, "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s" + delimiter + "%s", identifier, taskTitle, date, content, priority, estimatedDuration, completed? "yes" : "no");
     }
 
 	public static Task getTaskFromDelimitedString(String delimitedString, String delimiter) {

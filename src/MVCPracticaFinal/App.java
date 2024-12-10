@@ -27,12 +27,12 @@ public class App {
 			// por ejemplo: java -jar app.jar bin 
 			if(args.length == 2){
 				view = getViewForoption(args[0]);
-				repository = getRepositoryForOption(args[1]);
+				repository = getRepositoryForOption(args);
 				
 			}else{
 				// Opciones por defecto:
 				view = new InteractiveView();
-				repository = new BinaryRepository();
+				repository = new NotionRepository("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", "1577b06ef02d8052a495cb64292c3fb9");
 			}
 			
 			Model model = new Model(repository);
@@ -41,10 +41,10 @@ public class App {
 			c.init();  
 		}
 	
-		private static IRepository getRepositoryForOption(String argumento) {
-			switch (argumento) {
+		private static IRepository getRepositoryForOption(String[] args) {
+			switch (args[1]) {
 				case "notion":
-					return new NotionRepository();
+					return new NotionRepository(args[2], args[3]);
 
 				case "bin":
 					return new BinaryRepository();
