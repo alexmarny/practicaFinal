@@ -97,7 +97,7 @@ public class NotionRepository implements IRepository {
 			for (Page page : queryResults.getResults()) {
                 Map<String, PageProperty> properties = page.getProperties();
                 if (properties.containsKey(titleColumnName) &&
-                        properties.get(titleColumnName).getTitle().get(0).getText().getContent().equals(identifier)) {
+                        properties.get(titleColumnName).getTitle().get(0).getText().getContent().equals(identifier.toString())) {
                     return page.getId();
                 }
             }

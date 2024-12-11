@@ -55,14 +55,10 @@ public class Model {
 	}
 
 	public Task getTaskById(UUID taskId) {
-		try {
-			if (taskMap.containsKey(taskId)) {
-				return taskMap.get(taskId);
-			} else {
-				throw new IllegalArgumentException("Task ID not found");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (taskMap.containsKey(taskId)) {
+			return taskMap.get(taskId);
+		} else {
+			System.err.println("Task ID not found");
 			return null;
 		}
 	}
@@ -95,6 +91,7 @@ public class Model {
 
 		try {
 			repository.modifyTask(task);
+			
 		} catch (RepositoryException e) {
 			e.printStackTrace();
 		}
@@ -105,16 +102,15 @@ public class Model {
 	public void deleteTask(UUID taskId) {
 
 		Task task = taskMap.get(taskId);
-		if (task != null) {
-			taskMap.remove(taskId);
-			tasks.remove(task);
-			try {
-				repository.removeTask(task);
-			} catch (RepositoryException e) {
-				e.printStackTrace();
+		try {
+			if (task == null) {
+				throw new IllegalArgumentException("Task ID not found");
 			}
-		} else {
-			System.out.println("Task ID not found");
+			repository.removeTask(task);
+			tasks.remove(task);
+			taskMap.remove(taskId);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

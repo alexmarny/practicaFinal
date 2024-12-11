@@ -201,6 +201,11 @@ public class InteractiveView extends BaseView {
 			return;
 		}
 
+		if (task == null) {
+			showErrorMessage("Tarea no encontrada.");
+			return;
+		}
+
 
 
 		int option;
