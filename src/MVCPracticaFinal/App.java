@@ -11,7 +11,6 @@ import view.InteractiveView;
 import view.ttsView;
 
 
-@SuppressWarnings("unused")
 public class App {
 
 		/**
@@ -32,8 +31,8 @@ public class App {
 			}else{
 				// Opciones por defecto:
 				view = new InteractiveView();
-				// repository = new BinaryRepository(); 
-				repository = new NotionRepository("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", "1577b06ef02d8052a495cb64292c3fb9");
+				repository = new BinaryRepository(); 
+				// repository = new NotionRepository("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", "1577b06ef02d8052a495cb64292c3fb9");
 			}
 			
 			Model model = new Model(repository);
@@ -57,6 +56,12 @@ public class App {
 	
 		private static BaseView getViewForoption(String argumento) {
 			switch (argumento) {
+				case "tts":
+					return new ttsView();
+
+				case "interactive":
+					return new InteractiveView();
+
 				default:
 					return new InteractiveView();
 			}
