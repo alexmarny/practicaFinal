@@ -1,10 +1,8 @@
 package model;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -94,6 +92,12 @@ public class Model {
 		}
 		
 		task.setDate(new java.util.Date());
+
+		try {
+			repository.modifyTask(task);
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+		}
 	}
 
 

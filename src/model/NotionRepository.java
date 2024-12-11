@@ -50,37 +50,112 @@ public class NotionRepository implements IRepository {
 	@Override
 	public Task addTask(Task task) throws RepositoryException {
 		
-		System.out.println("Creando una nueva tarea...");
-		// Crear una nueva página en la base de datos de Notion
-        Map<String, PageProperty> properties = Map.of(
+		try {
+
+			System.out.println("Creando una nueva página...");
+			// Crear las propiedades de la página
+			// Las propiedades son las que se definen en la Dabase de Notion como columnas
+			// Se ejemplifican varios tipos de propiedades como texto, número, fecha y casilla de verificación
+			Map<String, PageProperty> properties = Map.of(
                 "Identifier", createTitleProperty(task.getIdentifier().toString()),
-                "Tarea", createRichTextProperty(task.getTitle()),
-				"Fecha", createDateProperty(task.getDate().toString()),
-				"Contenido", createRichTextProperty(task.getContent()),
+				"Tarea", createRichTextProperty(task.getTitle()),
+				"Fecha", createDateProperty(task.getDate().toInstant().toString()),
+				"Descripcion", createRichTextProperty(task.getContent()),
 				"Prioridad", createNumberProperty(task.getPriority()),
-				"Duración estimada", createNumberProperty(task.getEstimatedDuration()),
-				"Completada", createCheckboxProperty(task.isCompleted())
-           );
+				"Tiempo estimado", createNumberProperty(task.getEstimatedDuration()),
+				"Completado", createCheckboxProperty(task.isCompleted())
+			);
 
-		PageParent parent = PageParent.database(databaseId);
-		CreatePageRequest request = new CreatePageRequest(parent, properties);
-		
-		Page page = client.createPage(request);
+			// Crear la solicitud para crear la página
 
-		System.out.println("Tarea creada con éxito con ID: " + page.getId());
-		return task;
+			PageParent parent = PageParent.database(databaseId);
+
+			// Crear la solicitud a la API de Notion
+			CreatePageRequest request = new CreatePageRequest(parent, properties);
+	
+			// Ejecutar la solicitud (necesita de conexión a internet)
+			Page response = client.createPage(request);
+
+			// Mostrar el identificador de la página creada
+
+			System.out.println("Página creada con identificador: " + response.getId());
+
+			// Devolver el identificador de la página creada
+			return task;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RepositoryException("Error adding task to Notion", e);
+		}
 	}
+
+	private String findPageIdByIdentifier(UUID identifier, String titleColumnName) throws RepositoryException {
+		try {
+			QueryDatabaseRequest queryRequest = new QueryDatabaseRequest(databaseId);
+			QueryResults queryResults = client.queryDatabase(queryRequest);
+
+			for (Page page : queryResults.getResults()) {
+                Map<String, PageProperty> properties = page.getProperties();
+                if (properties.containsKey(titleColumnName) &&
+                        properties.get(titleColumnName).getTitle().get(0).getText().getContent().equals(identifier)) {
+                    return page.getId();
+                }
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RepositoryException("Error finding page ID by identifier", e);
+		}
+		return null;
+	}
+
 
 	@Override
 	public void removeTask(Task t) throws RepositoryException {
-		// TODO Auto-generated method stub
+
+		try {
+            String pageId = findPageIdByIdentifier(t.getIdentifier(),titleColumnName);
+            if (pageId == null) {
+                System.out.println("No se encontró un registro con el Identifier: " + t.getIdentifier());
+                return;
+            }
+            // Archivar la página
+            UpdatePageRequest updateRequest = new UpdatePageRequest(pageId, Collections.emptyMap(), true);
+            client.updatePage(updateRequest);
+            System.out.println("Página archivada con ID (interno Notion)" + pageId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 	}
 
 	@Override
 	public void modifyTask(Task t) throws RepositoryException {
-		// TODO Auto-generated method stub
+		
+		try {
+            String pageId = findPageIdByIdentifier(t.getIdentifier(), titleColumnName);
+            if (pageId == null) {
+                System.out.println("No se encontró un registro con el Identifier: " + t.getIdentifier());
+                return;
+            }
 
+            // Crear las propiedades actualizadas
+            Map<String, PageProperty> updatedProperties = Map.of(
+				"Tarea", createRichTextProperty(t.getTitle()),
+				"Fecha", createDateProperty(t.getDate().toInstant().toString()),
+				"Descripcion", createRichTextProperty(t.getContent()),
+				"Prioridad", createNumberProperty(t.getPriority()),
+				"Tiempo estimado", createNumberProperty(t.getEstimatedDuration()),
+				"Completado", createCheckboxProperty(t.isCompleted())
+            );
+
+            // Crear la solicitud de actualización
+            UpdatePageRequest updateRequest = new UpdatePageRequest(pageId, updatedProperties);
+            client.updatePage(updateRequest);
+
+            System.out.println("Página actualizada con ID (interno Notion)" + pageId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
 	@Override
