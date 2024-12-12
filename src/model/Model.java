@@ -132,15 +132,17 @@ public class Model {
 	}
 
 	public boolean guardarTareas() throws RepositoryException {
-
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ficheroEstadoSerializado))) {
-			oos.writeObject(tasks);
-			oos.writeObject(taskMap);
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
+		if ((repository instanceof BinaryRepository)) {
+			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ficheroEstadoSerializado))) {
+				oos.writeObject(tasks);
+				oos.writeObject(taskMap);
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
+		return false;
 	}
 
 }

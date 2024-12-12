@@ -8,14 +8,6 @@ import view.helper_classes.OnClickEventHelper;
 import view.helper_classes.OnFocusEventHelper;
 import view.helper_classes.RoundedBorder;
 
-import java.util.List;
-import java.util.UUID;
-
-import com.coti.tools.Esdia;
-
-import model.ExporterException;
-import model.RepositoryException;
-import model.Task;
 
 public class GUIView extends BaseView {
 

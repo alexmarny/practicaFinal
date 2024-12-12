@@ -14,19 +14,21 @@ import controller.Controller;
  * 
  */
 public abstract class BaseView {
+
+	public void setControllerRef(Controller controllerRef) {
+		this.controller = controllerRef;
+	}
     
     protected Controller controller;
 
-    public abstract void init(String welcomeMsg);
+    public abstract void init(String welcomeMsg); // Inicialización de la logica de la vista con el mensaje de bienvenida
     
-    public abstract void showMessage(String message);
+    public abstract void showMessage(String message); // Mostrar un mensaje
 
-	public abstract void showErrorMessage(String errorMsg);
+	public abstract void showErrorMessage(String errorMsg); // Mostrar un mensaje de error
     
-    public abstract void end(String goodbyeMsg);
+    public abstract void end(String goodbyeMsg); // Finalización de la logica de la vista con el mensaje de despedida
 
-    public void setControllerRef(Controller controllerRef) {
-		this.controller = controllerRef;
-	}
+   
 
 }
