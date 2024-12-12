@@ -47,12 +47,12 @@ public class NotionRepository implements IRepository {
 	this.databaseId = databaseId;
 	}													 
 
+	@SuppressWarnings("unused")
 	@Override
 	public Task addTask(Task task) throws RepositoryException {
 		
 		try {
 
-			System.out.println("Creando una nueva página...");
 			// Crear las propiedades de la página
 			// Las propiedades son las que se definen en la Dabase de Notion como columnas
 			// Se ejemplifican varios tipos de propiedades como texto, número, fecha y casilla de verificación
@@ -75,10 +75,6 @@ public class NotionRepository implements IRepository {
 	
 			// Ejecutar la solicitud (necesita de conexión a internet)
 			Page response = client.createPage(request);
-
-			// Mostrar el identificador de la página creada
-
-			System.out.println("Página creada con identificador: " + response.getId());
 
 			// Devolver el identificador de la página creada
 			return task;
@@ -115,13 +111,14 @@ public class NotionRepository implements IRepository {
 		try {
             String pageId = findPageIdByIdentifier(t.getIdentifier(),titleColumnName);
             if (pageId == null) {
-                System.out.println("No se encontró un registro con el Identifier: " + t.getIdentifier());
-                return;
+
+				throw new RepositoryException("No se encontró un registro con el Identifier: " + t.getIdentifier());
+                
             }
             // Archivar la página
             UpdatePageRequest updateRequest = new UpdatePageRequest(pageId, Collections.emptyMap(), true);
             client.updatePage(updateRequest);
-            System.out.println("Página archivada con ID (interno Notion)" + pageId);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,8 +131,7 @@ public class NotionRepository implements IRepository {
 		try {
             String pageId = findPageIdByIdentifier(t.getIdentifier(), titleColumnName);
             if (pageId == null) {
-                System.out.println("No se encontró un registro con el Identifier: " + t.getIdentifier());
-                return;
+                throw new RepositoryException("No se encontró un registro con el Identifier: " + t.getIdentifier());
             }
 
             // Crear las propiedades actualizadas
@@ -152,7 +148,6 @@ public class NotionRepository implements IRepository {
             UpdatePageRequest updateRequest = new UpdatePageRequest(pageId, updatedProperties);
             client.updatePage(updateRequest);
 
-            System.out.println("Página actualizada con ID (interno Notion)" + pageId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -264,28 +259,6 @@ public class NotionRepository implements IRepository {
         }
     }
 
-	public List<Task> getAllTasks() {
-        List<Task> tasks = new ArrayList<>();
-        try {
-            // Crear la solicitud para consultar la base de datos
-            QueryDatabaseRequest queryRequest = new QueryDatabaseRequest(databaseId);
-
-            // Ejecutar la consulta
-            QueryResults queryResults = client.queryDatabase(queryRequest);
-
-            // Procesar los resultados
-            for (Page page : queryResults.getResults()) {
-                Map<String, PageProperty> properties = page.getProperties();
-                Task Task = mapPageToTask(page.getId(), properties);
-                if (Task != null) {
-                    tasks.add(Task);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return tasks;
-    }
 
 
 }
