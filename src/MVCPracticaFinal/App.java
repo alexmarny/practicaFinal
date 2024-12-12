@@ -26,7 +26,7 @@ public class App {
 			
 			// LLamada esperada java -jar app.jar view repository
 			// por ejemplo: java -jar app.jar bin 
-			if(args.length == 2){
+			if(args.length <= 5 && args.length > 0){
 				view = getViewForoption(args[0]);
 				repository = getRepositoryForOption(args);
 				
