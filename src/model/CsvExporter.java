@@ -70,9 +70,9 @@ public class CsvExporter implements IExporter {
 				task.setPriority(Integer.parseInt(fields[4]));
 				task.setEstimatedDuration(Integer.parseInt(fields[5]));
 				task.setCompleted(Boolean.parseBoolean(fields[6]));
-				
+			
 				Model.addTask(task);
-
+				
 			} else {
 				throw new ExporterException("Invalid CSV format");
 				

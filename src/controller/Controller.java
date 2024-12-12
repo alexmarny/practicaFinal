@@ -5,9 +5,11 @@ import java.util.UUID;
 import java.util.ArrayList;
 
 import model.Model;
+import model.RepositoryException;
 import model.Task;
 import view.BaseView;
 import model.IExporter;
+import model.ExporterException;
 import model.ExporterFactory;
 
 public class Controller {
@@ -21,7 +23,7 @@ public class Controller {
 		this.view.setControllerRef(this);
 	}
 
-	public void init() {
+	public void init() throws RepositoryException {
 		if(model.cargarTareas()){
             view.init("Cargado estado anterior con exito");
         }else{
@@ -29,9 +31,11 @@ public class Controller {
         }
 	}
 
-	public boolean addTask(Task task) {
-
-		return Model.addTask(task);}
+	public void addTask(Task task) throws RepositoryException {
+		
+		Model.addTask(task);
+		
+	}
 
 	public Task getTaskById(UUID taskId) {
 		
@@ -53,33 +57,33 @@ public class Controller {
 		return model.obtenerTasksInmutable();
 	}
 
-	public void importarTareas(String nombreFichero, String tipoArchivo) {
+	public void importarTareas(String nombreFichero, String tipoArchivo) throws ExporterException, RepositoryException {
 		IExporter exporter = ExporterFactory.getExporter(String.valueOf(tipoArchivo));
 		
-		try {
-			exporter.importTasks(nombreFichero);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		exporter.importTasks(nombreFichero);
+		
 	}
 
-	public void exportarTareas(String nombreFichero, String tipoArchivo) {
+	public void exportarTareas(String nombreFichero, String tipoArchivo) throws ExporterException {
 		IExporter exporter = ExporterFactory.getExporter(String.valueOf(tipoArchivo));
-		try {
-			exporter.export(new ArrayList<>(model.obtenerTasksInmutable()), nombreFichero);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	
+		exporter.export(new ArrayList<>(model.obtenerTasksInmutable()), nombreFichero);
+		
 	}
 
 	public void end() {
 
         // Guardado final del programa
-        if(model.guardarTareas()){
-            view.end("Guardado el estado de la aplicación.\nSaliendo...");
-        }else{
-            view.end("No se pudo guardar el estado de la aplicación.\nSaliendo...");
-        }
+		try {
+			if(model.guardarTareas()){
+				view.end("Guardado el estado de la aplicación.\nSaliendo...");
+			}else{
+				view.end("No se pudo guardar el estado de la aplicación.\nSaliendo...");
+			}
+		} catch (RepositoryException e) {
+			e.printStackTrace();
+			view.end("Error al guardar el estado de la aplicación.\nSaliendo...");
+		}
 
 	}
 

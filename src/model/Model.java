@@ -27,30 +27,22 @@ public class Model {
 
 	public Model(IRepository repository) {
 		Model.repository = repository;
-		ficheroEstadoSerializado = Paths.get(System.getProperty("user.home"), "Desktop", "tasks.bin").toFile();
+		ficheroEstadoSerializado = Paths.get(System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "tasks.bin").toFile();
 		tasks = new ArrayList<Task>();
 	}
 
 	
 
-	public static boolean addTask(Task task) {
+	public static void addTask(Task task) throws IllegalArgumentException {	
 
-		try {
-			if (taskMap.containsKey(task.getIdentifier())) {
-				throw new IllegalArgumentException("Task ID: already exists");
-			}
+		if (!(taskMap.containsKey(task.getIdentifier()))) {
 			taskMap.put(task.getIdentifier(), task);
-		} catch (IllegalArgumentException e) {
-			System.out.println(e.getMessage());
-			return false;
-		}
-
-		try {
-			repository.addTask(task);
-			tasks.add(task);
-			return true;
-		} catch (Exception e) {
-			return false;
+			try {
+				repository.addTask(task);
+				tasks.add(task); 
+			} catch (RepositoryException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -58,7 +50,6 @@ public class Model {
 		if (taskMap.containsKey(taskId)) {
 			return taskMap.get(taskId);
 		} else {
-			System.err.println("Task ID not found");
 			return null;
 		}
 	}
@@ -99,17 +90,17 @@ public class Model {
 
 
 
-	public void deleteTask(UUID taskId) {
+	public void deleteTask(UUID taskId) throws IllegalArgumentException {
 
 		Task task = taskMap.get(taskId);
+		if (task == null) {
+			throw new IllegalArgumentException("Task ID not found");
+		}
 		try {
-			if (task == null) {
-				throw new IllegalArgumentException("Task ID not found");
-			}
 			repository.removeTask(task);
 			tasks.remove(task);
 			taskMap.remove(taskId);
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			e.printStackTrace();
 		}
 	}
@@ -127,7 +118,7 @@ public class Model {
 
 	}
 	
-	public boolean cargarTareas() {
+	public boolean cargarTareas() throws RepositoryException{
 		try {
 			repository.getAllTask().forEach(task -> {
 				tasks.add(task);
@@ -140,30 +131,16 @@ public class Model {
 		}
 	}
 
-	public boolean guardarTareas() {
+	public boolean guardarTareas() throws RepositoryException {
 
-		ObjectOutputStream oos = null;
-		try {
-			oos = new ObjectOutputStream(new FileOutputStream(ficheroEstadoSerializado));
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ficheroEstadoSerializado))) {
 			oos.writeObject(tasks);
 			oos.writeObject(taskMap);
 			return true;
-		} catch (IOException ex) {
-			// Dejamos el error para la depuración, por el canal err.
-			System.err.println("Error durante la serialización: " + ex.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
-		} finally {
-			if (oos != null) {
-				try {
-					oos.close();
-				} catch (IOException ex) {
-					// Dejamos el error para la depuración, por el canal err.
-					System.err.println("Error al cerrar el flujo: " + ex.getMessage());
-					return false;
-				}
-			}
 		}
-
 	}
 
 }

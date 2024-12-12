@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import com.coti.tools.Esdia;
+
+import model.ExporterException;
+import model.RepositoryException;
 import model.Task;
 
 public class InteractiveView extends BaseView {
@@ -206,8 +209,6 @@ public class InteractiveView extends BaseView {
 			return;
 		}
 
-
-
 		int option;
 		do {
 			System.out.println("Detalle de la tarea:");
@@ -359,11 +360,12 @@ public class InteractiveView extends BaseView {
 
 		try {
 			controller.importarTareas(nombreFichero, tipoArchivo);
-			showMessage("Tareas importadas correctamente");
-		} catch (Exception e) {
+
+		} catch(ExporterException e){
+			showErrorMessage("Error al importar tareas: " + e.getMessage());
+		} catch (RepositoryException e) {
 			showErrorMessage("Error al importar tareas: " + e.getMessage());
 		}
-
 		Esdia.readString("Presione Enter para continuar...");
 	}
 

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -26,19 +27,22 @@ public class JsonExporter implements IExporter {
 	}
 
 	@Override
-	public void importTasks(String fileName) throws ExporterException {
+	public void importTasks(String fileName) throws ExporterException{
 
 		String filePath = System.getProperty("user.home") + "/Desktop/" + fileName + ".json";
 		Gson gson = new Gson();
+		Type listType = new TypeToken<ArrayList<Task>>(){}.getType();
 		try (FileReader reader = new FileReader(filePath)) {
-			Type taskListType = new TypeToken<ArrayList<Task>>() {}.getType();
-			List<Task> tasks = gson.fromJson(reader, taskListType);
+			List<Task> tasks = gson.fromJson(reader, listType);
 			for (Task t : tasks) {
 				Model.addTask(t);
 			}
+		} catch (FileNotFoundException e) {
+			throw new ExporterException("Fichero no encontrado", e);
 		} catch (IOException e) {
-			throw new ExporterException("Error importing tasks from JSON", e);
+			throw new ExporterException("Error de importación", e);
 		}
+		
 	}
 
 	

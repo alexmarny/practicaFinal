@@ -15,7 +15,7 @@ public class BinaryRepository implements IRepository{
 	
 	private ArrayList<Task> tasks;
 
-	private final String path = System.getProperty("user.home") + File.separator +"tasks.bin";
+	private final String path = System.getProperty("user.home") + File.separator + "Desktop" + File.separator + "tasks.bin";
 
 	public BinaryRepository() {
 		tasks = new ArrayList<>();
@@ -68,12 +68,22 @@ public class BinaryRepository implements IRepository{
 
 		if (ficheroEstadoSerializado.exists() && ficheroEstadoSerializado.isFile()) {
 			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ficheroEstadoSerializado))) {
-				tasks = (ArrayList<Task>) ois.readObject();
-				Model.taskMap = (HashMap<UUID, Task>) ois.readObject();
+				ArrayList<Task> deserializedTasks = (ArrayList<Task>) ois.readObject();
+				HashMap<UUID, Task> deserializedTaskMap = (HashMap<UUID, Task>) ois.readObject();
+				
+				for (Task task : deserializedTasks) {
+					if (!tasks.contains(task)) {
+						tasks.add(task);
+					}
+				}
+				
+				for (UUID id : deserializedTaskMap.keySet()) {
+					if (!Model.taskMap.containsKey(id)) {
+						Model.taskMap.put(id, deserializedTaskMap.get(id));
+					}
+				}
 			} catch (IOException | ClassNotFoundException ex) {
-				// Dejamos el error para la depuración, por el canal err.
-				System.err.println("Error durante la deserialización: " + ex.getMessage());
-				return tasks;
+				throw new RepositoryException("Error during deserialization", ex);
 			}
 		}
 		return tasks;

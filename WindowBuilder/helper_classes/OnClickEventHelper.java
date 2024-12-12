@@ -1,4 +1,4 @@
-package view.helper_classes;
+package helper_classes;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -16,6 +16,7 @@ public class OnClickEventHelper {
                 button.setBackground(pressedColor);
                 button.setOpaque(true);
                 button.repaint();
+                System.out.println("Button Clicked");
             }
 
             @Override

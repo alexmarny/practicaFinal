@@ -5,11 +5,45 @@ import javax.swing.*;
 import java.awt.Color;
 import view.helper_classes.CustomFontLoader;
 import view.helper_classes.OnClickEventHelper;
+import view.helper_classes.OnFocusEventHelper;
 import view.helper_classes.RoundedBorder;
 
-public class GUIView {
-  public static void main(String[] args) {
+import java.util.List;
+import java.util.UUID;
 
+import com.coti.tools.Esdia;
+
+import model.ExporterException;
+import model.RepositoryException;
+import model.Task;
+
+public class GUIView extends BaseView {
+
+
+	@Override
+	public void init(String welcomeMsg) {
+		System.out.println(welcomeMsg);
+		showMenu();
+		
+	}
+
+	@Override
+	public void showMessage(String message) {
+		System.out.println(message);
+	}
+
+	@Override
+	public void showErrorMessage(String errorMsg) {
+		System.out.println("ERROR: " + errorMsg);
+	}
+
+	@Override
+	public void end(String goodbyeMsg) {
+		System.out.println(goodbyeMsg);
+		
+	}
+
+	public void showMenu() {
      JFrame frame = new JFrame("LISTA DE TAREAS");
      frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
      frame.setSize(835, 500);
@@ -32,7 +66,8 @@ public class GUIView {
      ADD.setFocusPainted(false);
      OnClickEventHelper.setOnClickColor(ADD, Color.decode("#232323"), Color.decode("#2e2e2e"));
 		ADD.addActionListener(e -> {
-			//TODO: Implementar la funcionalidad de añadir tarea
+			frame.dispose();
+			addTask();
 		});
 
      panel.add(ADD);
@@ -88,4 +123,37 @@ public class GUIView {
      frame.setVisible(true);
 
   }
+
+
+public void addTask() {
+
+	JFrame frame = new JFrame("AÑADIR UNA TAREA");
+
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      
+     JPanel panel = new JPanel();
+     panel.setLayout(null);
+     panel.setBackground(Color.decode("#1e1e1e"));
+
+     JLabel element1 = new JLabel("AÑADIR UNA TAREA");
+     element1.setBounds(237, 20, 268, 31);
+     element1.setFont(CustomFontLoader.loadFont("./resources/fonts/Lato.ttf", 27));
+     element1.setForeground(Color.decode("#D9D9D9"));
+     panel.add(element1);
+
+     JTextField element2 = new JTextField("");
+     element2.setBounds(237, 100, 268, 21);
+     element2.setFont(CustomFontLoader.loadFont("./resources/fonts/Lato.ttf", 14));
+     element2.setBackground(Color.decode("#B2B2B2"));
+     element2.setForeground(Color.decode("#656565"));
+     element2.setBorder(new RoundedBorder(2, Color.decode("#979797"), 0));
+     OnFocusEventHelper.setOnFocusText(element2, "Nombre de la tarea", Color.decode("#353535"),   Color.decode("#656565"));
+     panel.add(element2);
+
+     frame.add(panel);
+     frame.setVisible(true);
+	
 }
+}
+
+

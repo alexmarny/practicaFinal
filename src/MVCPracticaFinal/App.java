@@ -9,6 +9,8 @@ import model.NotionRepository;
 import view.BaseView;
 import view.InteractiveView;
 import view.ttsView;
+import view.GUIView;
+import model.RepositoryException;
 
 
 public class App {
@@ -30,15 +32,23 @@ public class App {
 				
 			}else{
 				// Opciones por defecto:
-				view = new InteractiveView();
+				//view = new InteractiveView();
+				view = new GUIView();
+				//view = new ttsView();
+				
 				repository = new BinaryRepository(); 
 				// repository = new NotionRepository("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", "1577b06ef02d8052a495cb64292c3fb9");
 			}
 			
 			Model model = new Model(repository);
 			Controller c = new Controller(model, view);
+
+			try {
+				c.init();
+			} catch (RepositoryException e) {
+				e.printStackTrace();
+			}
 			
-			c.init();  
 		}
 	
 		private static IRepository getRepositoryForOption(String[] args) {
